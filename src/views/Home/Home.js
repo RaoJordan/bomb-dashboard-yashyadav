@@ -85,7 +85,7 @@ const Home = () => {
   const bshareLPStats = useMemo(() => (bShareFtmLpStats ? bShareFtmLpStats : null), [bShareFtmLpStats]);
   const bombPriceInDollars = useMemo(
     () => (bombStats ? Number(bombStats.priceInDollars).toFixed(2) : null),
-    [bombStats],
+    [bombStats],  
   );
   const bombPriceInBNB = useMemo(() => (bombStats ? Number(bombStats.tokenInFtm).toFixed(4) : null), [bombStats]);
   const bombCirculatingSupply = useMemo(() => (bombStats ? String(bombStats.circulatingSupply) : null), [bombStats]);
@@ -208,7 +208,7 @@ const Home = () => {
                   href="https://t.me/bombmoneybsc"
                   rel="noopener noreferrer"
                   target="_blank"
-                  style={{ color: '#dddfee' }}
+                  style={{ color: '#dddfee' }}  
                 >
                   Telegram
                 </a>{' '}
@@ -261,7 +261,7 @@ const Home = () => {
         </Grid>
 
         <Grid container spacing={3}>
-          <Grid item xs={12} sm={12} justify="center" style={{ margin: '12px', display: 'flex' }}>
+          <Grid item xs={12} sm={12} justify="center" s tyle={{ margin: '12px', display: 'flex' }}>
             <Alert variant="filled" severity="info">
               <h2>BOMB Cycle: Guide to Indefinite Printing</h2>
               <b>How to maximize earnings while keeping BOMB printing!</b>{' '}

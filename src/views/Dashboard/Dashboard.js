@@ -26,6 +26,14 @@ import useBombFinance from '../../hooks/useBombFinance';
 //import { ReactComponent as IconTelegram } from '../../assets/img/telegram.svg';
 import { Helmet } from 'react-helmet';
 import BombImage from '../../assets/img/bomb.png';
+import './styles.css';
+import useCurrentEpoch from '../../hooks/useCurrentEpoch';
+import ProgressCountdown from '../Boardroom/components/ProgressCountdown';
+import moment from 'moment';
+import useTreasuryAllocationTimes from '../../hooks/useTreasuryAllocationTimes';
+import { getDisplayBalance } from '../../utils/formatBalance';
+import useTotalStakedOnBoardroom from '../../hooks/useTotalStakedOnBoardroom';
+import ExchangeStat from '../Bond/components/ExchangeStat';
 
 //import useBombMaxiStats from '../../hooks/useBombMaxiStats';
 
@@ -63,6 +71,10 @@ const Home = () => {
   const bShareStats = usebShareStats();
   const tBondStats = useBondStats();
   const bombFinance = useBombFinance();
+  const currentEpoch = useCurrentEpoch();
+  const { to } = useTreasuryAllocationTimes();
+  const totalStaked = useTotalStakedOnBoardroom();
+
   // const bombmaxi = useBombMaxiStats('0xd6f52e8ab206e59a1e13b3d6c5b7f31e90ef46ef000200000000000000000028');
 
   // console.log(bombmaxi);
@@ -180,8 +192,7 @@ const Home = () => {
       <BackgroundImage />
       <Grid container spacing={3}>
 
-        {/* Wallet */}
-        <Grid item xs={12} sm={8}>
+        <Grid item xs={12} sm={12}>
           <Card style={{ height: '100%' }}>
             <CardContent style={{ marginTop: '2.5%' }}>
               {/* <h2 style={{ marginBottom: '20px' }}>Wallet Balance</h2> */}
@@ -189,246 +200,358 @@ const Home = () => {
                 Bomb Finance Summary
               </h2>
               <hr></hr>
-              <table class="table table-hover" >
-                <thead>
-                  <tr>
-                    <td></td>
-                    <td>Current Supply</td>
-                    <td>Total Supply </td>
-                    <td>Price</td>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <th>$BOMB</th>
-                    <td>8.66M</td>
-                    <td>60.9k</td>
-                    <td>
-                      $0.24
-                      <br></br>
-                      1.05 BTCB
-                    </td>
-                  </tr>
-                  <tr>
-                    <th >$BSHARE</th>
-                    <td>11.43k</td>
-                    <td>8.49M</td>
-                    <td>
-                      $300
-                      <br></br>
-                      13000 BTCB
-                    </td>
-                  </tr>
-                  <tr>
-                    <th >$BBOND</th>
-                    <td>20.00k</td>
-                    <td>175k</td>
-                    <td>
-                      $0.28
-                      <br></br>
-                      1.15 BTCB
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
 
-              <Grid item xs={12} sm={4}>
+              <div className="container">
+                <div className="grid1">
+                  <table class="table" style={{ height: '100%' }}>
+                    <thead>
+                      <tr>
+                        <td></td>
+                        <td>Current Supply</td>
+                        <td>Total Supply </td>
+                        <td>Price</td>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <th>$BOMB</th>
+                        <td>{roundAndFormatNumber(bombCirculatingSupply, 2)} <br /></td>
+                        <td>{roundAndFormatNumber(bombTotalSupply, 2)}</td>
+                        <td>
+                          ${bombPriceInDollars ? roundAndFormatNumber(bombPriceInDollars, 2) : '-.--'}
+                          <br></br>
+                          <span>
+                            1.05 BTCB
+                          </span>
+
+                        </td>
+                      </tr>
+                      <tr>
+                        <th >$BSHARE</th>
+                        <td>{roundAndFormatNumber(bShareCirculatingSupply, 2)} <br /></td>
+                        <td>{roundAndFormatNumber(bShareTotalSupply, 2)}</td>
+                        <td>
+                          ${bSharePriceInDollars ? bSharePriceInDollars : '-.--'}
+                          <br></br>
+                          13000 BTCB
+                        </td>
+                      </tr>
+                      <tr>
+                        <th >$BBOND</th>
+                        <td>20.00k</td>
+                        <td>175k</td>
+                        <td>
+                          $0.28
+                          <br></br>
+                          1.15 BTCB
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+                <div className="grid2">
+                  <Card style={{ float: 'right' }}>
+                    <CardContent align="center" style={{ position: 'relative' }}>
+
+                      <h3 style={{ marginBottom: '10px' }}>Current Epoch</h3>
+                      <span style={{ fontSize: '30px' }}>
+                        {Number(currentEpoch)}
+                      </span>
+                      <hr></hr>
+
+                      <span style={{ fontSize: '30px' }}>
+                        <ProgressCountdown base={moment().toDate()} hideBar={true} deadline={to} description="Next Epoch" />
+                      </span>
+                      <h3 style={{ marginBottom: '10px' }}>Next Epoch in</h3>
+                      <hr></hr>
+
+                      <span style={{ fontSize: '20px' }}>
+                        Live TWAP: 1.17
+                        <br></br>
+                        TVL: ${TVL}
+                        <br></br>
+                        Last Epoch TWAP: 1.22
+                      </span>
+
+                    </CardContent>
+                  </Card>
+                </div>
+              </div>
+
+
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/* BoardRoom */}
+        <Grid item xs={12} sm={8}>
+          <div style={{ textAlign: 'right', margin: '5px' }}>
+            <a href="" style={{ textDecoration: 'underline', color: 'white' }} >Read Investment Strategy &gt;</a>
+          </div>
+
+          <Button href="" className="blueButton" style={{ margin: '5px', width: '98%' }}>
+            Invest Now
+          </Button>
+          <Button href="https://discord.bomb.money"
+            rel="noopener noreferrer"
+            target="_blank"
+            className="shinyButton" style={{ margin: '7px', width: '48%' }}>
+
+            Chat on Discord
+          </Button>
+          <Button href="https://docs.bomb.money"
+            rel="noopener noreferrer"
+            target="_blank" className="shinyButton" style={{ margin: '8px', width: '48%' }}>
+            Read Docs
+          </Button>
           <Card>
             <CardContent align="center" style={{ position: 'relative' }}>
-             
-              <h2 style={{ marginBottom: '10px' }}>BOMB</h2>
-              
-              <span style={{ fontSize: '12px' }}>
-                Market Cap: ${roundAndFormatNumber(bombCirculatingSupply * bombPriceInDollars, 2)} <br/>
-                Circulating Supply: {roundAndFormatNumber(bombCirculatingSupply, 2)} <br />
-                Total Supply: {roundAndFormatNumber(bombTotalSupply, 2)}
-              </span>
+              <h2 style={{ textAlign: 'left', margin: '5px', paddingRight: '10px' }}>
+                Boardroom
+                <button className="recButton" style={{ alignContent: 'center', marginLeft: '15px' }}>Recommended</button>
+              </h2>
+              <div className="conthalf">
+                <span>Stake BSHARE and earn BOMB every epoch</span>
+                <span>TVL: ${TVL}</span>
+              </div>
+              <hr></hr>
+              <div style={{ textAlign: 'right' }}>Total Staked : {getDisplayBalance(totalStaked)}</div>
+              <br></br>
+
+              <div className="conthalf">
+                <span>
+                  <table class="table table-bordered table-dark">
+                    <thead>
+                      <tr>
+                        <th scope="col">Daily Returns:</th>
+                        <th scope="col">Your Stake</th>
+                        <th scope="col">Earned:</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style={{ fontSize: '30px', textAlign: 'center' }}>2%</td>
+                        <td style={{ textAlign: 'center' }}>124.21</td>
+                        <td style={{ textAlign: 'center' }}>6.4413</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td style={{ textAlign: 'center' }}>$1171.62</td>
+                        <td style={{ textAlign: 'center' }}>$298.88</td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </span>
+                <span>
+                  <button href="" className="simpleButtons" style={{ margin: '5px', width: '46%' }}> Deposit</button>
+                  <button href="" className="simpleButtons" style={{ margin: '5px', width: '46%' }}> Withdraw</button>
+                  <button href="" className="simpleButtons" style={{ margin: '5px', width: '98%' }}> Claim Rewards</button>
+                </span>
+              </div>
+
             </CardContent>
           </Card>
         </Grid>
 
 
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* BOMB */}
         <Grid item xs={12} sm={4}>
-          <Card>
-            <CardContent align="center" style={{ position: 'relative' }}>
-              <Box mt={2}>
-                <CardIcon>
-                  <TokenSymbol symbol="BOMB" />
-                </CardIcon>
-              </Box>
-              <Button
-                onClick={() => {
-                  bombFinance.watchAssetInMetamask('BOMB');
-                }}
-                style={{ position: 'absolute', top: '10px', right: '10px', border: '1px grey solid' }}
-              >
-                {' '}
-                <b>+</b>&nbsp;&nbsp;
-                <img alt="metamask fox" style={{ width: '20px', filter: 'grayscale(100%)' }} src={MetamaskFox} />
-              </Button>
-              <h2 style={{ marginBottom: '10px' }}>BOMB</h2>
-              10,000 BOMB (1.0 Peg) =
-              <Box>
-                <span style={{ fontSize: '30px', color: 'white' }}>
-                  {bombPriceInBNB ? bombPriceInBNB : '-.----'} BTC
-                </span>
-              </Box>
-              <Box>
-                <span style={{ fontSize: '16px', alignContent: 'flex-start' }}>
-                  ${bombPriceInDollars ? roundAndFormatNumber(bombPriceInDollars, 2) : '-.--'} / BOMB
-                </span>
-              </Box>
-              <span style={{ fontSize: '12px' }}>
-                Market Cap: ${roundAndFormatNumber(bombCirculatingSupply * bombPriceInDollars, 2)} <br />
-                Circulating Supply: {roundAndFormatNumber(bombCirculatingSupply, 2)} <br />
-                Total Supply: {roundAndFormatNumber(bombTotalSupply, 2)}
-              </span>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* BSHARE */}
-        <Grid item xs={12} sm={4}>
-          <Card>
-            <CardContent align="center" style={{ position: 'relative' }}>
-              <Button
-                onClick={() => {
-                  bombFinance.watchAssetInMetamask('BSHARE');
-                }}
-                style={{ position: 'absolute', top: '10px', right: '10px', border: '1px grey solid' }}
-              >
-                {' '}
-                <b>+</b>&nbsp;&nbsp;
-                <img alt="metamask fox" style={{ width: '20px', filter: 'grayscale(100%)' }} src={MetamaskFox} />
-              </Button>
-              <Box mt={2}>
-                <CardIcon>
-                  <TokenSymbol symbol="BSHARE" />
-                </CardIcon>
-              </Box>
-              <h2 style={{ marginBottom: '10px' }}>BSHARE</h2>
-              Current Price
-              <Box>
-                <span style={{ fontSize: '30px', color: 'white' }}>
-                  {bSharePriceInBNB ? bSharePriceInBNB : '-.----'} BNB
-                </span>
-              </Box>
-              <Box>
-                <span style={{ fontSize: '16px' }}>
-                  ${bSharePriceInDollars ? bSharePriceInDollars : '-.--'} / BSHARE
-                </span>
-              </Box>
-              <span style={{ fontSize: '12px' }}>
-                Market Cap: ${roundAndFormatNumber((bShareCirculatingSupply * bSharePriceInDollars).toFixed(2), 2)}{' '}
-                <br />
-                Circulating Supply: {roundAndFormatNumber(bShareCirculatingSupply, 2)} <br />
-                Total Supply: {roundAndFormatNumber(bShareTotalSupply, 2)}
-              </span>
-            </CardContent>
-          </Card>
-        </Grid>
-
-        {/* BBOND */}
-        <Grid item xs={12} sm={4}>
-          <Card>
-            <CardContent align="center" style={{ position: 'relative' }}>
-              <Button
-                onClick={() => {
-                  bombFinance.watchAssetInMetamask('BBOND');
-                }}
-                style={{ position: 'absolute', top: '10px', right: '10px', border: '1px grey solid' }}
-              >
-                {' '}
-                <b>+</b>&nbsp;&nbsp;
-                <img alt="metamask fox" style={{ width: '20px', filter: 'grayscale(100%)' }} src={MetamaskFox} />
-              </Button>
-              <Box mt={2}>
-                <CardIcon>
-                  <TokenSymbol symbol="BBOND" />
-                </CardIcon>
-              </Box>
-              <h2 style={{ marginBottom: '10px' }}>BBOND</h2>
-              10,000 BBOND
-              <Box>
-                <span style={{ fontSize: '30px', color: 'white' }}>
-                  {tBondPriceInBNB ? tBondPriceInBNB : '-.----'} BTC
-                </span>
-              </Box>
-              <Box>
-                <span style={{ fontSize: '16px' }}>${tBondPriceInDollars ? tBondPriceInDollars : '-.--'} / BBOND</span>
-              </Box>
-              <span style={{ fontSize: '12px' }}>
-                Market Cap: ${roundAndFormatNumber((tBondCirculatingSupply * tBondPriceInDollars).toFixed(2), 2)} <br />
-                Circulating Supply: {roundAndFormatNumber(tBondCirculatingSupply, 2)} <br />
-                Total Supply: {roundAndFormatNumber(tBondTotalSupply, 2)}
-              </span>
-            </CardContent>
-          </Card>
-        </Grid>
-        <Grid item xs={12} sm={6}>
           <Card>
             <CardContent align="center">
-              <Box mt={2}>
-                <CardIcon>
-                  <TokenSymbol symbol="BOMB-BTCB-LP" />
-                </CardIcon>
-              </Box>
-              <h2>BOMB-BTCB PancakeSwap LP</h2>
-              <Box mt={2}>
-                <Button disabled onClick={onPresentBombZap} className="shinyButtonDisabledSecondary">
-                  Zap In
-                </Button>
-              </Box>
-              <Box mt={2}>
-                <span style={{ fontSize: '26px' }}>
-                  {bombLPStats?.tokenAmount ? bombLPStats?.tokenAmount : '-.--'} BOMB /{' '}
-                  {bombLPStats?.ftmAmount ? bombLPStats?.ftmAmount : '-.--'} BTCB
-                </span>
-              </Box>
-              <Box>${bombLPStats?.priceOfOne ? bombLPStats.priceOfOne : '-.--'}</Box>
-              <span style={{ fontSize: '12px' }}>
-                Liquidity: ${bombLPStats?.totalLiquidity ? roundAndFormatNumber(bombLPStats.totalLiquidity, 2) : '-.--'}{' '}
-                <br />
-                Total Supply: {bombLPStats?.totalSupply ? roundAndFormatNumber(bombLPStats.totalSupply, 2) : '-.--'}
-              </span>
+              <h3>Latest News</h3>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
+              <br></br>
             </CardContent>
           </Card>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Card>
-            <CardContent align="center">
-              <Box mt={2}>
-                <CardIcon>
-                  <TokenSymbol symbol="BSHARE-BNB-LP" />
-                </CardIcon>
-              </Box>
-              <h2>BSHARE-BNB PancakeSwap LP</h2>
-              <Box mt={2}>
-                <Button onClick={onPresentBshareZap} className="shinyButtonSecondary">
-                  Zap In
-                </Button>
-              </Box>
-              <Box mt={2}>
-                <span style={{ fontSize: '26px' }}>
-                  {bshareLPStats?.tokenAmount ? bshareLPStats?.tokenAmount : '-.--'} BSHARE /{' '}
-                  {bshareLPStats?.ftmAmount ? bshareLPStats?.ftmAmount : '-.--'} BNB
+
+        {/*Bomb Farms*/}
+
+        <Grid item xs={12} sm={12}>
+          <Card style={{ height: '100%' }}>
+            <CardContent style={{ marginTop: '1%' }}>
+              <div className="conthalf">
+                <span style={{ margin: '5px' }}>
+                  <h3>Bomb Farms</h3>
+                  Stake BSHARE and earn BOMB every epoch
                 </span>
-              </Box>
-              <Box>${bshareLPStats?.priceOfOne ? bshareLPStats.priceOfOne : '-.--'}</Box>
-              <span style={{ fontSize: '12px' }}>
-                Liquidity: $
-                {bshareLPStats?.totalLiquidity ? roundAndFormatNumber(bshareLPStats.totalLiquidity, 2) : '-.--'}
-                <br />
-                Total Supply: {bshareLPStats?.totalSupply ? roundAndFormatNumber(bshareLPStats.totalSupply, 2) : '-.--'}
-              </span>
+                <span>
+                  <button href="" className="simpleButtons" style={{ marginRight: '50px', width: '100%' }}>Claim All</button>
+                </span>
+              </div>
+
+              <div className="conthalf">
+                <span>
+                  <h2 style={{ textAlign: 'left', margin: '5px', paddingRight: '10px' }}>
+                    Bomb-BTCB
+                    <button className="recButton" style={{ alignContent: 'center', marginLeft: '15px' }}>Recommended</button>
+                  </h2>
+                </span>
+                <span>TVL: ${TVL}</span>
+              </div>
+              <hr></hr>
+
+              <div className="conthalf">
+                <span>
+                  <table class="table table-bordered table-dark">
+                    <thead>
+                      <tr>
+                        <th scope="col">Daily Returns:</th>
+                        <th scope="col">Your Stake</th>
+                        <th scope="col">Earned:</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style={{ fontSize: '30px', textAlign: 'center' }}>2%</td>
+                        <td style={{ textAlign: 'center' }}>124.21</td>
+                        <td style={{ textAlign: 'center' }}>6.4413</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td style={{ textAlign: 'center' }}>$1171.62</td>
+                        <td style={{ textAlign: 'center' }}>$298.88</td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </span>
+                <span>
+                  <button href="" className="simpleButtons" style={{ margin: '5px', width: '46%' }}> Deposit</button>
+                  <button href="" className="simpleButtons" style={{ margin: '5px', width: '46%' }}> Withdraw</button>
+                  <button href="" className="simpleButtons" style={{ margin: '5px', width: '98%' }}> Claim Rewards</button>
+                </span>
+              </div>
+
+
             </CardContent>
           </Card>
         </Grid>
+
+        {/*BSHARE BNB*/}
+
+        <Grid item xs={12} sm={12} style={{ paddingTop: '0px' }}>
+          <Card style={{ height: '100%' }}>
+            <CardContent style={{ marginTop: '1%' }}>
+
+              <div className="conthalf">
+                <span>
+                  <h2 style={{ textAlign: 'left', margin: '5px', paddingRight: '10px' }}>
+                    BSHARE-BNB
+                    <button className="recButton" style={{ alignContent: 'center', marginLeft: '15px' }}>Recommended</button>
+                  </h2>
+                </span>
+                <span>TVL: ${TVL}</span>
+              </div>
+              <hr></hr>
+
+              <div className="conthalf">
+                <span>
+                  <table class="table table-bordered table-dark">
+                    <thead>
+                      <tr>
+                        <th scope="col">Daily Returns:</th>
+                        <th scope="col">Your Stake</th>
+                        <th scope="col">Earned:</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <tr>
+                        <td style={{ fontSize: '30px', textAlign: 'center' }}>2%</td>
+                        <td style={{ textAlign: 'center' }}>124.21</td>
+                        <td style={{ textAlign: 'center' }}>6.4413</td>
+                      </tr>
+                      <tr>
+                        <td></td>
+                        <td style={{ textAlign: 'center' }}>$1171.62</td>
+                        <td style={{ textAlign: 'center' }}>$298.88</td>
+                      </tr>
+
+                    </tbody>
+                  </table>
+                </span>
+                <span>
+                  <button href="" className="simpleButtons" style={{ margin: '5px', width: '46%' }}> Deposit</button>
+                  <button href="" className="simpleButtons" style={{ margin: '5px', width: '46%' }}> Withdraw</button>
+                  <button href="" className="simpleButtons" style={{ margin: '5px', width: '98%' }}> Claim Rewards</button>
+                </span>
+              </div>
+
+
+            </CardContent>
+          </Card>
+        </Grid>
+
+        {/*Bonds*/}
+
+        <Grid item xs={12} sm={12} style={{ paddingTop: '10px' }}>
+          <Card style={{ height: '100%' }}>
+            <CardContent style={{ marginTop: '1%' }}>
+
+              <div className="conthalf">
+                <span>
+                  <h2 style={{ textAlign: 'left', margin: '5px', paddingRight: '10px' }}>
+                    Bonds
+                  </h2>
+                  <p style={{ marginTop: '0px', marginLeft: '5px' }}>BBOND can be purchased only on contraction periods, when TWAP of BOMB is below 1</p>
+                </span>
+              </div>
+
+              <div class="contain">
+                <div class="column">
+                  <p style={{ fontSize: '13px' }}>Current Price: (Bomb)^2</p>
+                  <p style={{ fontSize: '23px', fontWeight: 'bold' }}> 
+                  <ExchangeStat
+                    tokenName="10,000 BBOND"
+                    price={Number(tBondStats?.tokenInFtm).toFixed(4) || '-'}
+                  />
+                  </p>
+                </div>
+                <div class="column">
+                  <p style={{ fontSize: '13px' }}>Available to redeem:</p>
+                  <p style={{ fontSize: '23px', fontWeight: 'bold' }}> 456</p>
+                </div>
+                <div class="column">
+                  <div className="conthalf" >
+                    <span>
+                      <p style={{ fontWeight: 'bold', marginBottom: '1px' }}>Purchase BBond</p>
+                      <p style={{ marginTop: '1px' }}>Bomb is over peg</p>
+                    </span>
+                    <span>
+                      <button href="" className="simpleButtons" style={{ margin: '5px', width: '95%' }} >Purchase</button>
+                    </span>
+                  </div>
+                  <hr></hr>
+
+                  <div className="conthalf" >
+                    <span>
+                      <p style={{ fontWeight: 'bold', marginBottom: '1px' }}>Redeem Bomb</p>
+                    </span>
+                    <span>
+                      <button href="" className="simpleButtons" style={{ margin: '5px', width: '95%' }} >Redeem</button>
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+            </CardContent>
+          </Card>
+        </Grid>
+
       </Grid>
     </Page>
   );

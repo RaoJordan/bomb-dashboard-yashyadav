@@ -76,8 +76,8 @@ const Boardroom = () => {
               <Grid item xs={12} md={2} lg={2} className={classes.gridItem}>
                 <Card className={classes.gridItem}>
                   <CardContent style={{ textAlign: 'center' }}>
-                    <Typography style={{ textTransform: 'uppercase', color: '#f9d749' }}>Next Epoch</Typography>
-                    <ProgressCountdown base={moment().toDate()} hideBar={true} deadline={to} description="Next Epoch" />
+                      <Typography style={{ textTransform: 'uppercase', color: '#f9d749' }}>Next Epoch</Typography>
+                      <ProgressCountdown base={moment().toDate()} hideBar={true} deadline={to} description="Next Epoch" />
                   </CardContent>
                 </Card>
               </Grid>
