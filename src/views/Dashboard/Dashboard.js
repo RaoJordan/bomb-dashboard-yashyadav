@@ -12,6 +12,7 @@ import useZap from '../../hooks/useZap';
 import useBondStats from '../../hooks/useBondStats';
 import usebShareStats from '../../hooks/usebShareStats';
 import useTotalValueLocked from '../../hooks/useTotalValueLocked';
+
 // import { Bomb as bombTesting } from '../../bomb-finance/deployments/deployments.testing.json';
 //import { Bomb as bombProd } from '../../bomb-finance/deployments/deployments.mainnet.json';
 import { roundAndFormatNumber } from '../../0x';
@@ -34,6 +35,7 @@ import useTreasuryAllocationTimes from '../../hooks/useTreasuryAllocationTimes';
 import { getDisplayBalance } from '../../utils/formatBalance';
 import useTotalStakedOnBoardroom from '../../hooks/useTotalStakedOnBoardroom';
 import ExchangeStat from '../Bond/components/ExchangeStat';
+import useCashPriceInLastTWAP from '../../hooks/useCashPriceInLastTWAP';
 
 //import useBombMaxiStats from '../../hooks/useBombMaxiStats';
 
@@ -131,6 +133,10 @@ const Home = () => {
   const bombLpZap = useZap({ depositTokenName: 'BOMB-BTCB-LP' });
   const bshareLpZap = useZap({ depositTokenName: 'BSHARE-BNB-LP' });
 
+  //calculating TWAP
+  const cashPrice = useCashPriceInLastTWAP();
+  const bondScale = (Number(cashPrice) / 100000000000000).toFixed(4);
+
   const [onPresentBombZap, onDissmissBombZap] = useModal(
     <ZapModal
       decimals={18}
@@ -221,7 +227,7 @@ const Home = () => {
                           ${bombPriceInDollars ? roundAndFormatNumber(bombPriceInDollars, 2) : '-.--'}
                           <br></br>
                           <span>
-                            1.05 BTCB
+                            {bombPriceInBNB} BTCB
                           </span>
 
                         </td>
@@ -233,17 +239,17 @@ const Home = () => {
                         <td>
                           ${bSharePriceInDollars ? bSharePriceInDollars : '-.--'}
                           <br></br>
-                          13000 BTCB
+                          {bSharePriceInBNB} BTCB
                         </td>
                       </tr>
                       <tr>
                         <th >$BBOND</th>
-                        <td>20.00k</td>
-                        <td>175k</td>
+                        <td>{tBondCirculatingSupply}</td>
+                        <td>{tBondTotalSupply}</td>
                         <td>
-                          $0.28
+                          ${tBondPriceInDollars}
                           <br></br>
-                          1.15 BTCB
+                          {tBondPriceInBNB} BTCB
                         </td>
                       </tr>
                     </tbody>
@@ -266,11 +272,11 @@ const Home = () => {
                       <hr></hr>
 
                       <span style={{ fontSize: '20px' }}>
-                        Live TWAP: 1.17
+                        Live Twap : <span style={{color: 'green'}}>&nbsp;{bondScale}</span> 
                         <br></br>
-                        TVL: ${TVL}
+                        TVL: <span style={{color: 'green'}}>&nbsp;{TVL}</span> 
                         <br></br>
-                        Last Epoch TWAP: 1.22
+                        Last Epoch TWAP: <span style={{color: 'green'}}>&nbsp;{bondScale}</span>
                       </span>
 
                     </CardContent>
@@ -514,11 +520,11 @@ const Home = () => {
               <div class="contain">
                 <div class="column">
                   <p style={{ fontSize: '13px' }}>Current Price: (Bomb)^2</p>
-                  <p style={{ fontSize: '23px', fontWeight: 'bold' }}> 
-                  <ExchangeStat
-                    tokenName="10,000 BBOND"
-                    price={Number(tBondStats?.tokenInFtm).toFixed(4) || '-'}
-                  />
+                  <p style={{ fontSize: '23px', fontWeight: 'bold' }}>
+                    <ExchangeStat
+                      tokenName="10,000 BBOND"
+                      price={Number(tBondStats?.tokenInFtm).toFixed(4) || '-'}
+                    />
                   </p>
                 </div>
                 <div class="column">
@@ -556,5 +562,7 @@ const Home = () => {
     </Page>
   );
 };
+
+
 
 export default Home;
